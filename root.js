@@ -7,6 +7,8 @@ import {navigationRef} from './src/utils/nav';
 import Login from './src/Screen/Login/index';
 import Home from './src/Screen/Home/index';
 import Register from './src/Screen/Register';
+import GameDetails from './src/Screen/Home/GameDetails';
+import ButtonGenre from './src/Component/ButtonGenre';
 
 import {useSelector} from 'react-redux';
 const Stack = createStackNavigator();
@@ -17,18 +19,14 @@ export default function Root() {
     <NavigationContainer ref={navigationRef}>
       <Stack.Navigator initialRouteName="Home">
         <Stack.Screen
-          component={Login}
-          name="Login"
+          component={GameDetails}
+          name="Detail"
           options={{headerShown: false}}
         />
+        <Stack.Screen component={ButtonGenre} name="Gamegenre" />
         <Stack.Screen
           component={Home}
           name="Home"
-          options={{headerShown: false}}
-        />
-        <Stack.Screen
-          component={Register}
-          name="Register"
           options={{headerShown: false}}
         />
       </Stack.Navigator>

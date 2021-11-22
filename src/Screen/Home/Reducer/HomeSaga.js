@@ -1,6 +1,6 @@
 import axios from 'axios';
 import {ToastAndroid} from 'react-native';
-import {put, takeLatest, select, takeEvery} from 'redux-saga/effects';
+import {put, takeLatest, select} from 'redux-saga/effects';
 import {navigate} from './../../../Utils/Navigation';
 import {baseUrl, apiKey} from '../../../utils/url';
 
@@ -11,6 +11,8 @@ import {
   setAllGame,
   setGameByGenre,
   setGenre,
+  setId,
+  setGameDetails,
 } from './HomeAction';
 import {setLoading} from './../../../Store/GlobalAction';
 
@@ -70,8 +72,27 @@ function* sagaGetGameByGenre(action) {
   }
 }
 
+function* sagaGetGameDetail(action) {
+  IdGames = yield select(state => state.HomeReducer.id);
+  try {
+    yield put(setLoading(true));
+
+    const res = yield axios.get(`${baseUrl}/games/${IdGames}`, {
+      params: {
+        key: `631e5446f52944b5a6dd4453c6f6a4b5`,
+      },
+    });
+    console.log(res, 'result get game detail');
+    yield put(setGameDetails(res.data));
+  } catch (error) {
+    console.log(error, 'error get all movie');
+  } finally {
+    yield put(setLoading(false));
+  }
+}
 export function* SagaHomeWorker() {
   yield takeLatest('GET_GENRE', sagaGetGenre);
   yield takeLatest('GET_ALL_GAME', sagaGetAllGame);
   yield takeLatest('GET_GAME_BY_GENRE', sagaGetGameByGenre);
+  yield takeLatest('GET_GAME_DETAIL', sagaGetGameDetail);
 }

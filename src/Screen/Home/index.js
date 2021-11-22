@@ -17,8 +17,9 @@ import {FlatList, TouchableOpacity} from 'react-native-gesture-handler';
 import {ms} from 'react-native-size-matters';
 
 //component
-import {ButtonGenre} from '../../Component/ButtonGenre';
+import ButtonGenre from '../../Component/ButtonGenre';
 import LoadingComp from '../../Component/LoadingComp';
+import Header from '../../Component/Header';
 
 export default function Home(props) {
   const [allGame, setAllGame] = useState([{}]);
@@ -30,6 +31,7 @@ export default function Home(props) {
 
   const getId = item => {
     dispatch(setId(item.id));
+    props.navigation.navigate('Detail');
   };
   const getPage = () => {
     dispatch(setPage(5));
@@ -51,99 +53,99 @@ export default function Home(props) {
       <SafeAreaView style={styles.global}>
         <ScrollView>
           <View>
+            <Header />
+          </View>
+          <View>
             <ButtonGenre />
           </View>
-          {Load ? (
-            <LoadingComp />
-          ) : (
-            <>
-              <View style={styles.allGame}>
-                <Text
-                  style={{fontSize: ms(32), color: 'white', fontWeight: '800'}}>
-                  All Games
-                </Text>
-              </View>
-              <View>
-                <FlatList
-                  style={styles.flatlist}
-                  data={Games}
-                  keyExtractor={item => item.id}
-                  renderItem={({item}) => (
-                    <TouchableOpacity onPress={() => getId(item)}>
-                      <ScrollView style={styles.containerContent}>
+          <>
+            <View style={styles.allGame}>
+              <Text
+                style={{fontSize: ms(32), color: 'white', fontWeight: '800'}}>
+                All Games
+              </Text>
+            </View>
+            <View>
+              <FlatList
+                style={styles.flatlist}
+                data={Games}
+                keyExtractor={item => item.id}
+                renderItem={({item}) => (
+                  <TouchableOpacity onPress={() => getId(item)}>
+                    <ScrollView style={styles.containerContent}>
+                      <View>
                         <View>
-                          <View>
-                            <Image
-                              style={styles.imgContent}
-                              source={{uri: `${item.background_image}`}}
-                            />
+                          <Image
+                            style={styles.imgContent}
+                            source={{uri: `${item.background_image}`}}
+                          />
+                        </View>
+
+                        <View style={styles.content}>
+                          <View style={styles.containerGenre}>
+                            {item.genres ? (
+                              item?.genres.map((e, i) => {
+                                return (
+                                  <>
+                                    <View style={styles.genre}>
+                                      <Text
+                                        style={{
+                                          color: '#ffffff',
+                                          fontWeight: '400',
+                                        }}>
+                                        {e.name}
+                                      </Text>
+                                    </View>
+                                  </>
+                                );
+                              })
+                            ) : (
+                              <></>
+                            )}
+
+                            <View style={styles.containerRate}>
+                              <Text
+                                style={{
+                                  color: '#f3ad2e',
+                                  fontWeight: '500',
+                                  alignSelf: 'center',
+                                }}>
+                                {item.rating}
+                              </Text>
+                            </View>
                           </View>
 
-                          <View style={styles.content}>
-                            <View style={styles.containerGenre}>
-                              {item.genres ? (
-                                item?.genres.map((e, i) => {
-                                  return (
-                                    <>
-                                      <View style={styles.genre}>
-                                        <Text
-                                          style={{
-                                            color: '#ffffff',
-                                            fontWeight: '400',
-                                          }}>
-                                          {e.name}
-                                        </Text>
-                                      </View>
-                                    </>
-                                  );
-                                })
-                              ) : (
-                                <></>
-                              )}
-
-                              <View style={styles.containerRate}>
-                                <Text
-                                  style={{
-                                    color: '#f3ad2e',
-                                    fontWeight: '500',
-                                    alignSelf: 'center',
-                                  }}>
-                                  {item.rating}
-                                </Text>
-                              </View>
-                            </View>
-
-                            <View>
-                              <Text style={styles.txtTitle}>{item.name}</Text>
-                            </View>
+                          <View>
+                            <Text style={styles.txtTitle}>{item.name}</Text>
                           </View>
                         </View>
-                      </ScrollView>
-                    </TouchableOpacity>
-                  )}
-                  ListFooterComponent={
-                    Load ? (
-                      <ActivityIndicator size={ms(24)} color="white" />
-                    ) : (
-                      <></>
-                    )
-                  }
-                />
-                <View>
-                  <TouchableOpacity style={styles.show} onPress={getPage}>
-                    <Text
-                      style={{
-                        fontSize: ms(14),
-                        color: 'white',
-                        fontWeight: '500',
-                      }}>
-                      Show More
-                    </Text>
+                      </View>
+                    </ScrollView>
                   </TouchableOpacity>
-                </View>
-              </View>
-            </>
-          )}
+                )}
+                ListFooterComponent={
+                  Load ? (
+                    <ActivityIndicator size={ms(48)} color="white" />
+                  ) : (
+                    <>
+                      <View>
+                        <TouchableOpacity style={styles.show} onPress={getPage}>
+                          <Text
+                            style={{
+                              fontSize: ms(14),
+                              color: 'white',
+                              fontWeight: '500',
+                            }}>
+                            Show More
+                          </Text>
+                        </TouchableOpacity>
+                      </View>
+                    </>
+                  )
+                }
+              />
+            </View>
+          </>
         </ScrollView>
       </SafeAreaView>
     </>

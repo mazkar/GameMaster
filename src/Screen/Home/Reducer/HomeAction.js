@@ -88,3 +88,16 @@ export const setId = payload => {
     payload,
   };
 };
+
+export const getGameDetails = payload => {
+  return {
+    type: 'GET_GAME_DETAIL',
+    payload,
+  };
+};
+export const setGameDetails = payload => {
+  return {
+    type: 'SET_GAME_DETAIL',
+    payload,
+  };
+};

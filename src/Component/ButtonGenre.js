@@ -2,22 +2,30 @@ import React, {useState, useEffect} from 'react';
 import {StyleSheet, Text, View, ScrollView, Image} from 'react-native';
 
 import {useDispatch, useSelector} from 'react-redux';
+import {useNavigation} from '@react-navigation/native';
 import {Input, Button} from 'react-native-elements';
 
 import {
   setGenresName,
   getGenre,
   getGameByGenre,
+  setId,
 } from './../Screen/Home/Reducer/HomeAction';
 import {setLoading} from '../Store/GlobalAction';
 import {FlatList, TouchableOpacity} from 'react-native-gesture-handler';
 import {ms} from 'react-native-size-matters';
 import LoadingComp from './LoadingComp';
 
-export function ButtonGenre(props) {
+export default function ButtonGenre(props) {
   const [activeGenre, setActiveGenre] = useState(0);
 
   const dispatch = useDispatch();
+  const navigation = useNavigation();
+
+  const getId = item => {
+    dispatch(setId(item.id));
+    navigation.navigate('Detail');
+  };
 
   const getGenreName = e => {
     dispatch(setGenresName(e.name));
@@ -39,45 +47,43 @@ export function ButtonGenre(props) {
   const Load = useSelector(state => state.GlobalReducer.loading);
   return (
     <View>
+      <View>
+        <ScrollView horizontal={true} showsHorizontalScrollIndicator={false}>
+          {Genre?.length > 0 ? (
+            Genre.map((e, i) => {
+              return (
+                <>
+                  <View style={styles.containerGenre}>
+                    <TouchableOpacity
+                      onPress={() => {
+                        setActiveGenre(i);
+                        console.log(i, 'i');
+                        getGenreName(e);
+                        gameByGenre();
+                      }}
+                      style={[
+                        {
+                          backgroundColor:
+                            activeGenre === i ? '#0000' : '#18364e',
+                        },
+                        styles.genre,
+                      ]}
+                      key={i}>
+                      <Text style={styles.txtGenre}>{e.name}</Text>
+                    </TouchableOpacity>
+                  </View>
+                </>
+              );
+            })
+          ) : (
+            <></>
+          )}
+        </ScrollView>
+      </View>
       {Load ? (
         <LoadingComp />
       ) : (
         <>
-          <View>
-            <ScrollView
-              horizontal={true}
-              showsHorizontalScrollIndicator={false}>
-              {Genre?.length > 0 ? (
-                Genre.map((e, i) => {
-                  return (
-                    <>
-                      <View style={styles.containerGenre}>
-                        <TouchableOpacity
-                          onPress={() => {
-                            setActiveGenre(i);
-                            console.log(i, 'i');
-                            getGenreName(e);
-                            gameByGenre();
-                          }}
-                          style={[
-                            {
-                              backgroundColor:
-                                activeGenre === i ? '#0000' : '#18364e',
-                            },
-                            styles.genre,
-                          ]}
-                          key={i}>
-                          <Text style={styles.txtGenre}>{e.name}</Text>
-                        </TouchableOpacity>
-                      </View>
-                    </>
-                  );
-                })
-              ) : (
-                <></>
-              )}
-            </ScrollView>
-          </View>
           <View>
             <View style={styles.ContainerTitle}>
               <Text
@@ -93,7 +99,9 @@ export function ButtonGenre(props) {
                 data={Games}
                 keyExtractor={item => item.id}
                 renderItem={({item}) => (
-                  <TouchableOpacity style={{marginRight: ms(16)}}>
+                  <TouchableOpacity
+                    style={{marginRight: ms(16)}}
+                    onPress={() => getId(item)}>
                     <View>
                       <Image
                         source={{uri: `${item.background_image}`}}
